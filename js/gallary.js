@@ -84,16 +84,46 @@ const images = [
     markup.push(item);
   };
 
+// Перевірка області кліка  
   function clickValidation(event) {
     event.preventDefault();
-    console.log(event.target.dataset.source);
+    if(event.target.nodeName === "IMG") {
+    const originalPictureLink = event.target.dataset.source;
+    const altPictureText = event.target.alt;
+    createModalWindow(originalPictureLink, altPictureText);
+    };
   };
 
+// Створення модального вікна
+function createModalWindow(link, alt) {
+  const modal = basicLightbox.create(`
+  <img src="${link}" alt="${alt}" width="800" height="600">`
+  );
+  modal.show();
+  addKeyListener(modal);
+};
+
+// Додавання/видалення слухача клавіатури
+function addKeyListener(modal) {
+  const visible = basicLightbox.visible();
+  if(visible === true) {
+    document.addEventListener("keydown", event => {
+      if(event.code === 'Escape') {
+        modal.close();
+        document.removeEventListener("keydown", () => {});
+      };
+    });
+  };
+};
+
 // Додавання розмітки в галерею
-  const gallery = document.querySelector('.gallery');
-  const markup = [];
-  images.forEach(createElementGallery);
-  gallery.append(...markup);
+const gallery = document.querySelector('.gallery');
+const markup = [];
+images.forEach(createElementGallery);
+gallery.append(...markup);
 
 // Прослуховування кліків по зображенням
 gallery.addEventListener('click', clickValidation);
+
+
+
