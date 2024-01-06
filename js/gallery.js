@@ -85,7 +85,7 @@ const images = [
   };
 
 // Перевірка області кліка  
-  function clickValidation(event) {
+  function clickCheck(event) {
     event.preventDefault();
     if(event.target.nodeName === "IMG") {
     const originalPictureLink = event.target.dataset.source;
@@ -94,25 +94,25 @@ const images = [
     };
   };
 
-// Створення модального вікна
+// Створення модального вікна / прослуховування клавіатури
 function createModalWindow(link, alt) {
-  const modal = basicLightbox.create(`
-  <img src="${link}" alt="${alt}" width="800" height="600">`
-  );
-  modal.show();
-  addKeyListener(modal);
-};
-
-// Додавання/видалення слухача клавіатури
-function addKeyListener(modal) {
-  const visible = basicLightbox.visible();
-  if(visible === true) {
-    document.addEventListener("keydown", event => {
-      if(event.code === 'Escape') {
-        modal.close();
-        document.removeEventListener("keydown", () => {});
-      };
+  const modal = basicLightbox.create(`<img src="${link}" alt="${alt}" width="800" height="600">`, 
+    { closable: false,  
+      onShow: (modal) => {
+        document.addEventListener('keydown', keyboardCheck);
+      },
+      onClose: (modal) => {
+        document.removeEventListener('keydown', keyboardCheck);
+      }
     });
+  modal.show();
+
+  // Перевірка натискання кнопок клавіатури
+  function keyboardCheck(event) {
+    if(event.code === 'Escape') {
+      document.removeEventListener('keydown', keyboardCheck);
+      modal.close();
+    };
   };
 };
 
@@ -123,7 +123,6 @@ images.forEach(createElementGallery);
 gallery.append(...markup);
 
 // Прослуховування кліків по зображенням
-gallery.addEventListener('click', clickValidation);
-
+gallery.addEventListener('click', clickCheck);
 
 
