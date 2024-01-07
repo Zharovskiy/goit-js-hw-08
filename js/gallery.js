@@ -97,8 +97,7 @@ const images = [
 // Створення модального вікна / прослуховування клавіатури
 function createModalWindow(link, alt) {
   const modal = basicLightbox.create(`<img src="${link}" alt="${alt}" width="800" height="600">`, 
-    { closable: false,  
-      onShow: (modal) => {
+    { onShow: (modal) => {
         document.addEventListener('keydown', keyboardCheck);
       },
       onClose: (modal) => {
@@ -110,7 +109,6 @@ function createModalWindow(link, alt) {
   // Перевірка натискання кнопок клавіатури
   function keyboardCheck(event) {
     if(event.code === 'Escape') {
-      document.removeEventListener('keydown', keyboardCheck);
       modal.close();
     };
   };
