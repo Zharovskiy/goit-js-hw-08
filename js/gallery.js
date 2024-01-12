@@ -65,19 +65,19 @@ const images = [
   ];
   
 // Створення елемента розмітки галереї
-  function createElementGallery(element) {
+  function createElementGallery({preview, original, description}) {
     const item = document.createElement('li');
     item.classList.add('gallery-item');
 
     const link = document.createElement('a');
     link.classList.add('gallery-link');
-    link.setAttribute('href', element.original);
+    link.setAttribute('href', original);
     
     const img = document.createElement('img');
     img.classList.add('gallery-image');
-    img.setAttribute('src', element.preview);
-    img.dataset.source = element.original;
-    img.setAttribute('alt', element.description);
+    img.setAttribute('src', preview);
+    img.dataset.source = original;
+    img.setAttribute('alt', description);
 
     link.append(img);
     item.append(link);
@@ -87,10 +87,9 @@ const images = [
 // Перевірка області кліка  
   function clickCheck(event) {
     event.preventDefault();
-    if(event.target.nodeName === "IMG") {
-    const originalPictureLink = event.target.dataset.source;
-    const altPictureText = event.target.alt;
-    createModalWindow(originalPictureLink, altPictureText);
+    const {target: {dataset: {source: link}, alt, nodeName}} = event;
+    if(nodeName === "IMG") {
+      createModalWindow(link, alt);
     };
   };
 
@@ -107,8 +106,8 @@ function createModalWindow(link, alt) {
   modal.show();
 
   // Перевірка натискання кнопок клавіатури
-  function keyboardCheck(event) {
-    if(event.code === 'Escape') {
+  function keyboardCheck({code}) {
+    if(code === 'Escape') {
       modal.close();
     };
   };
